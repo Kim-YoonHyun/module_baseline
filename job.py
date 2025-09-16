@@ -12,24 +12,25 @@ from utilskit import dataframeutils as dfu
 from utilskit import dbutils as dbu
 
 
-def job(root_path, cf, test, date_, now, out_var1, out_var2, log):
-    start = time.time()
-
-    _in_var1 = cf.get('InTemp', '_in_var1') # 기본 (str)
-    in_var1 = cf['InTemp']['_in_var1'] # 기본 (str)
-
-    _in_var2 = cf.getint('InTemp', '_in_var2') # int
-    _in_var3 = cf.getfloat('InTemp', '_in_var3') # float
-    _in_var4 = cf.getboolean('InTemp', '_in_var4') # bool type
-
-    # custom path
-    save_path = cf['Path']['save_path']
-    root_data_path = cf['Path']['root_data_path']
-    
-    status, error_info, error_msg, result_dict = 1, '', '', {'result':None}
+def job(*args):
+    # 결과용 변수 최초 세팅
+    status, error_info, error_msg = 1, '', ''
+    result_dict = {
+        'analy_start':None,
+        'time_start':None,
+        'log_msg':'',
+    }
     # =========================================================================
-    # 저장 경로 생성
-    os.makedirs(save_path, exist_ok=True)
+    # 0. 일반 변수 세팅 및 결과 변수 생성
+    try:
+        root_path, test, date_, now, log, push_example = args[0:6]
+        job_result_dict = {}
+    except Exception:
+        status = 2
+        error_info = u.get_error_info()
+        error_msg = f'존재하지 않는 데이터입니다. 입력변수를 확인부탁드립니다.'
+        return status, error_info, error_msg, result_dict
+
 
     # =========================================================================
     try:
@@ -70,7 +71,7 @@ def job(root_path, cf, test, date_, now, out_var1, out_var2, log):
     # =========================================================================
     # 결과 산출
     try:
-        result = f'외부 변수: {out_var1}, {out_var2}, 내부변수: {_in_var1}, {_in_var2}, {_in_var3}, {_in_var4}'
+        pass
     except Exception:
         status = 2
         error_info = u.get_error_info()
@@ -81,14 +82,6 @@ def job(root_path, cf, test, date_, now, out_var1, out_var2, log):
     # 결과 기록
     try:
         pass
-        # t = time.time() - start
-        # hh, mm, ss = tiu.time_measure(t)
-        # result_dict = {
-        #     'result':result,
-        #     '모듈 진행시간':f"{hh}시간 {mm}분 {ss}초"
-        # }
-        # with open(f'{save_path}/result_name.json', 'w', encoding='utf-8-sig') as f:
-        #     json.dump(result_dict, f, indent='\t', ensure_ascii=False)
     except Exception:
         status = 2
         error_info = u.get_error_info()
