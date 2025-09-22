@@ -4,7 +4,7 @@ import configparser
 import warnings
 warnings.filterwarnings('ignore')
 
-from analy_module import container
+import container
 
 DEVELOP = True
 
