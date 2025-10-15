@@ -1,3 +1,6 @@
+# 2025-10-15 ver 0.2.2
+- run.py 에서 전역변수 DEVELOP 활용 제거
+
 # 2025-09-22 ver 0.2.1
 - start.sh, tar.sh, requirements.txt 추가
 

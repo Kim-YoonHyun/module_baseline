@@ -120,4 +120,5 @@ def main(run_mode, root_path, cf, test, out_var1, out_var2):
 
     except Exception:
         print(u.get_error_info())
+        print(error_msg)
         print('비정상 에러 발생')

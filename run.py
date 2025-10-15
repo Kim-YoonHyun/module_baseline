@@ -6,21 +6,20 @@ warnings.filterwarnings('ignore')
 
 import container
 
-DEVELOP = True
-
 
 def main():
+    # 모듈 위치에 따른 root path 지정
     # root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     # root_path = os.path.dirname(os.path.abspath(__file__))
+
+    # 모듈 외부 공용 config 읽기(선택)
+    ipconfig_path = os.path.dirname(root_path)
+    ipconfig = configparser.ConfigParser()
+    ipconfig.read(os.path.join(ipconfig_path, 'ipconfig.ini'))
     
     # config 읽기
     config = configparser.ConfigParser()
-    # 개발 설정
-    if DEVELOP:
-        config.read(os.path.join(root_path, 'develop_config.ini'))
-    # 운영 설정
-    else:
-        config.read(os.path.join(root_path, 'config.ini'))
+    config.read(os.path.join(root_path, 'config.ini'))
     
     run_mode = config.get('Run', 'run_mode')
     test = config.getboolean('Run', 'test')
