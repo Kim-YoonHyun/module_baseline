@@ -1,26 +1,29 @@
 import sys
 import os 
+import json
 import configparser
 import warnings
 warnings.filterwarnings('ignore')
 
-import container
+from module import container
 
 
 def main():
-    # 모듈 위치에 따른 root path 지정
-    # root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    # root_path = os.path.dirname(os.path.abspath(__file__))
+    root_path = os.path.expanduser('~')
+    module_path = os.path.dirname(os.path.abspath(__file__))
+    src_path = os.path.dirname(module_path)
+    system_path = os.path.dirname(src_path)
 
-    # 모듈 외부 공용 config 읽기(선택)
-    ipconfig_path = os.path.dirname(root_path)
-    ipconfig = configparser.ConfigParser()
-    ipconfig.read(os.path.join(ipconfig_path, 'ipconfig.ini'))
+    # manifest 읽기
+    with open(os.path.join(system_path, 'manifest.json'), 'r', encoding='utf-8-sig') as f:
+        manifest = json.load(f)
+    config_path = manifest['modules']['module']['config']
     
     # config 읽기
     config = configparser.ConfigParser()
-    config.read(os.path.join(root_path, 'config.ini'))
-    
+    config.read(os.path.join(system_path, config_path))
+
+    # 필요한 변수 불러오기
     run_mode = config.get('Run', 'run_mode')
     test = config.getboolean('Run', 'test')
     out_var1 = 111
@@ -35,13 +38,13 @@ def main():
             sched = BlockingScheduler(timezone='Asia/Seoul')
             sched.add_job(container.main, 'interval', minutes=5, id='inter_0', 
             # sched.add_job(container.main, 'interval', seconds=5, id='inter_0', 
-                          args=[run_mode, root_path, config, test, out_var1, out_var2])
+                          args=[run_mode, module_path, src_path, system_path, config, test, out_var1, out_var2])
         elif sched_mode == 'cron':
             hh = config.get('Run', 'hh')
             mm = config.get('Run', 'mm')
             ss = config.get('Run', 'ss')
             sched.add_job(container.main, 'cron', hour=hh, minute=mm, second=ss, id='cron_0', 
-                          args=[run_mode, root_path, config, test, out_var1, out_var2])
+                          args=[run_mode, module_path, src_path, system_path, config, test, out_var1, out_var2])
         else:
             print(f"Schedule mode '{sched_mode}' does not exist. Please choose one of: interval, cron")
             raise ValueError('스케줄 모드 설정 에러')
@@ -57,7 +60,7 @@ def main():
         app = FastAPI(
             title="API title",
             version="0.1.0",
-            # root_path='/path',
+            # module_path='/path',
             description="""Markdown 문법 내용"""
         )
         app.add_middleware(
@@ -78,7 +81,9 @@ def main():
 
             result_dict = container.main(
                 run_mode=run_mode,
-                root_path=root_path,
+                module_path=module_path,
+                src_path=src_path,
+                system_path=system_path,
                 cf=config,
                 out_var1=out_var1,
                 out_var2=out_var2
@@ -92,7 +97,9 @@ def main():
     elif run_mode == 'normal':
         container.main(
             run_mode=run_mode,
-            root_path=root_path,
+            module_path=module_path,
+            src_path=src_path,
+            system_path=system_path,
             cf=config, 
             test=test,
             out_var1=out_var1,

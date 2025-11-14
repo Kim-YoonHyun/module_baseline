@@ -1,15 +1,14 @@
 import sys
 import os
 import json
-import pandas as pd
-import numpy as np
+import copy
+import random
 import time
 from datetime import datetime, timedelta
+import pandas as pd
+import numpy as np
 
 from utilskit import utils as u
-from utilskit import timeutils as tiu
-from utilskit import dataframeutils as dfu
-from utilskit import dbutils as dbu
 
 
 def job(*args):
@@ -17,38 +16,46 @@ def job(*args):
     status, error_info, error_msg = 1, '', ''
     result_dict = {
         'analy_start':None,
-        'time_start':None,
-        'log_msg':'',
+        'log_msg':''
     }
+
     # =========================================================================
-    # 0. 일반 변수 세팅 및 결과 변수 생성
+    # 0. 일반변수 세팅 및 결과 변수 생성
     try:
-        root_path, test, date_, now, log, push_example = args[0:6]
-        job_result_dict = {}
+        module_path, src_path, system_path = args[0:3]
+        test, date_, now, log = args[3:7]
+
+        # 분석시작 시간 설정 - 기본: 현재 기준 3분 이전
+        analy_start = datetime.strptime(f'{date_} {now}', '%Y-%m-%d %H:%M:%S') - timedelta(minutes=3)
+        analy_start = datetime.strftime(analy_start, '%Y-%m-%d %H:%M:%S')
+
+        # 결과 추가
+        result_dict['analy_start'] = analy_start
     except Exception:
         status = 2
         error_info = u.get_error_info()
-        error_msg = f'존재하지 않는 데이터입니다. 입력변수를 확인부탁드립니다.'
+        error_msg = '일반&결과 변수 세팅 중 에러가 발생하였습니다.'
         return status, error_info, error_msg, result_dict
-
-
+    
     # =========================================================================
+    # 메인 코드1
     try:
-        # 데이터 불러오기
         '''
-        dataset code
+        code
         '''
+        if True:
+            result_dict['log_msg'] = '분석 진행 도중 예외 문구 입력 가능'
     except Exception:
         status = 2
         error_info = u.get_error_info()
-        error_msg = f'존재하지 않는 데이터입니다. 입력변수를 확인부탁드립니다.'
+        error_msg = '전처리 중 에러가 발생하였습니다.'
         return status, error_info, error_msg, result_dict
 
     # =========================================================================
-    # 모듈 진행1
+    # 메인 코드2
     try:
         '''
-        module code1
+        code
         '''
     except Exception:
         status = 2
@@ -57,36 +64,15 @@ def job(*args):
         return status, error_info, error_msg, result_dict
     
     # =========================================================================
-    # 모듈 진행2
+    # 메인 코드3
     try:
         '''
-        module code2
+        code
         '''
     except Exception:
         status = 2
         error_info = u.get_error_info()
-        error_msg = '모듈 진행 중 에러가 발생하였습니다.'
+        error_msg = '모듈 결과 생성 중 에러가 발생하였습니다.'
         return status, error_info, error_msg, result_dict
-    
-    # =========================================================================
-    # 결과 산출
-    try:
-        pass
-    except Exception:
-        status = 2
-        error_info = u.get_error_info()
-        error_msg = '모듈 진행 중 에러가 발생하였습니다.'
-        return status, error_info, error_msg, result_dict
-    
-    # =========================================================================
-    # 결과 기록
-    try:
-        pass
-    except Exception:
-        status = 2
-        error_info = u.get_error_info()
-        error_msg = '최종 결과 저장 중 에러가 발생하였습니다.'
-        return status, error_info, error_msg, result_dict
-
     status = 3
     return status, error_info, error_msg, result_dict
