@@ -10,8 +10,11 @@ import numpy as np
 
 from utilskit import utils as u
 
+from module.parameters import Params
 
-def job(*args):
+
+def job(p: Params):
+# def job(*args):
     # 결과용 변수 최초 세팅
     status, error_info, error_msg = 1, '', ''
     result_dict = {
@@ -22,8 +25,9 @@ def job(*args):
     # =========================================================================
     # 0. 일반변수 세팅 및 결과 변수 생성
     try:
-        module_path, src_path, system_path = args[0:3]
-        test, date_, now, log = args[3:7]
+        module_path, src_path, system_path = p.path.module_path, p.path.src_path, p.path.system_path
+        test = p.run.test
+        date_, now = p.common.date_, p.common.now
 
         # 분석시작 시간 설정 - 기본: 현재 기준 3분 이전
         analy_start = datetime.strptime(f'{date_} {now}', '%Y-%m-%d %H:%M:%S') - timedelta(minutes=3)

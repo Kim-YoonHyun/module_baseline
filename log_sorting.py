@@ -10,6 +10,7 @@ import logie as lo
 
 def main():
     # 실행
+    
     lo.log_sort('/home/gj_anly/kimyh/bus_monitoring_module/log/normal/analysis')
     
     

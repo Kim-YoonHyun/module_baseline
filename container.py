@@ -4,16 +4,24 @@ import json
 import time
 from datetime import datetime, timedelta
 
-from module import job
-from module import resulting as res
-
 from utilskit import timeutils as tiu
 from utilskit import utils as u
 import logie as lo
 
+from module import job
+from module import resulting as res
+from module.parameters import *
 
-def main(run_mode, module_path, src_path, system_path, cf, test, out_var1, out_var2):
+
+def main(run_mode, module_path, src_path, system_path, cf, out_var1, out_var2):
     # run 변수
+    test = cf.getboolean('Run', 'test')
+    '''
+    cf.get()
+    cf.getint()
+    cf.getboolean()
+    cf.getfloat()
+    '''
 
     # 로그 파일 생성
     log_path = os.path.join(module_path, 'log', f'{run_mode}', 'module')
@@ -31,6 +39,11 @@ def main(run_mode, module_path, src_path, system_path, cf, test, out_var1, out_v
     # date_ = '2025-11-11'
     # now = '13:32:03'
 
+    # =========================================================================
+    path_params = PathParams(module_path=module_path, src_path=src_path, system_path=system_path)
+    run_params = RunParams(test=test)
+
+    # =========================================================================
     '''
     status
     0: 대기중
@@ -38,22 +51,23 @@ def main(run_mode, module_path, src_path, system_path, cf, test, out_var1, out_v
     2: 에러
     3: 정상 완료
     '''
-    # =========================================================================
     try:
         whole_start = time.time() 
         log.info(f'{date_} {now} 분석 시작')
 
         # ================================================================
         # 입력 변수 세팅
-        args = [
-            module_path, src_path, system_path,
-            test, date_, now, log
-        ]
+        common_params = CommonParams(date=date_, now=now)
+        params = Params(
+            path=path_params,
+            run=run_params,
+            common=common_params
+        )
 
         # ================================================================
         # 분석 시작
         job_start = time.time()
-        status, error_info, error_msg, result_dict = job.job(*args)
+        status, error_info, error_msg, result_dict = job.job(params)
 
         # ================================================================
         # 분석중 에러가 발생한 경우

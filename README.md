@@ -1,4 +1,12 @@
-# 2025-11-14 ver 2.0
+# Version
+
+## 2025-11-27 ver 2.0.1
+
+- parameters.py 추가
+- parameters.py 와 연동시켜 container.py, job.py, run.py 변경
+
+## 2025-11-14 ver 2.0
+
 - module 개발 라이브러리 구조 대폭 변경
 1. 일반, API, 스케줄러 3가지 방식 중 택1 하여 모듈을 돌리는 방식을 정하는 run.py
 2. log 생성 및 job 에 필요한 args 를 구성하고 job 자체의 기동 및 결과를 리턴받는 container.py
